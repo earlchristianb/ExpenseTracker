@@ -12,9 +12,47 @@ datasource db {
 }
 
 
-model user{
+model User{
  id String @id @default(uuid())
  createdAt DateTime @default(now())
  active Boolean @default(true)
  email String @unique
+ budgetMonthly BudgetMonthly[]
+ expenses Expenses[]
+}
+
+model BudgetMonthly{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  category BudgetCategory
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  budgetDescription String?
+}
+
+model Expenses{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  amount Int 
+  category ExpenseCategory
+  description String?
+  user User @relation(fields: [userId], references: [id])
+  userId String
+}
+
+
+enum ExpenseCategory{
+  FOOD
+  APPLIANCES
+  RENT
+  BILL
+  TRANSPORTATION
+  FUEL
+}
+
+enum BudgetCategory{
+  INCOME
+  BUSINESS
+  BONUS
+  OTHERS
 }
