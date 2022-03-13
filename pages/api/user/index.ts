@@ -1,10 +1,8 @@
 
-import { User } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import Prisma from '../../../utils/prisma';
-
-
+import {useSession} from 'next-auth/react'
 
 type UserResult = {
     id: string;
@@ -17,13 +15,16 @@ type UserResult = {
 }
 
 
-export default async function handler(
+const handler=async(
   req: NextApiRequest,
-  res: NextApiResponse<User|null>
-) {
+  res: NextApiResponse
+)=>{
     try {
-       
-      const result:UserResult|null = await Prisma.user.findUnique(
+        
+        const { data: session } = useSession();
+        
+        if (session?.name) {
+        const result = await Prisma.user.findUnique(
         {
             where: {
                 email:"earlchristianb@gmail.com"
@@ -32,10 +33,17 @@ export default async function handler(
           
         }
         
-    );
-    res.status(200).json(result)
+        );
+            return res.status(200).json({ result, session })
+        }
+        else return res.status(400).send('Unauthorized')
+
+      
 } catch (error) {
     res.status(500)
 }
   
 }
+
+
+export default handler;

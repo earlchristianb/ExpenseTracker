@@ -23,21 +23,25 @@ export default async function handler(
 ) {
     const email = <string> req.query.email;
     try {
-       
-      const result:UserResult|null = await Prisma.user.findUnique(
-        {
-            where: {
-                email:email
-            },
+
+        
+            const result: UserResult | null = await Prisma.user.findUnique(
+                {
+                    where: {
+                        email: email
+                    },
       
           
-        }
+                }
         
-        );
-        if (result) {
-            res.status(200).json({ result })
-        } else res.status(500).send('User not found');
+            );
+            if (result) {
+                res.status(200).json({ result })
+            } else res.status(500).send('User not found');
 
+        
+     
+     
 } catch (error) {
     res.status(500)
 }
